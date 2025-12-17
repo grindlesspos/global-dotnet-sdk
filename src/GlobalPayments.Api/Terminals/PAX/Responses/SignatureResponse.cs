@@ -38,16 +38,25 @@ namespace GlobalPayments.Api.Terminals.PAX {
             if (UnparsedSignature != null)
             {
                 int imageWidth = 150;
+                int imageHeight = 100;
                 switch (_deviceType)
                 {
                     case DeviceType.PAX_PX5:
                     case DeviceType.PAX_PX7:
+                    case DeviceType.PAX_D190:
                         {
                             imageWidth = 350;
                         }
                         break;
+                    case DeviceType.PAX_A920:
+                    case DeviceType.PAX_A35:
+                        {
+                            imageWidth = 250;
+                            imageHeight = 250;
+                        }
+                        break;
                 }
-                SignatureData = TerminalUtilities.BuildSignatureImage(UnparsedSignature, imageWidth);
+                SignatureData = TerminalUtilities.BuildSignatureImage(UnparsedSignature, imageWidth, imageHeight);
             }
         }
     }

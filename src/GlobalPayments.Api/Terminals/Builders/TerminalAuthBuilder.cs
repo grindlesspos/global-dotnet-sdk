@@ -25,7 +25,8 @@ namespace GlobalPayments.Api.Terminals.Builders {
         internal string PoNumber { get; set; }
         internal bool RequestMultiUseToken { get; set; }
         internal bool SignatureCapture { get; set; }
-        internal decimal TaxAmount { get; set; }
+        internal bool TipRequest { get; set; }
+        internal decimal? TaxAmount { get; set; }
         internal string TaxExempt { get; set; }
         internal string TaxExemptId { get; set; }
         internal int TerminalRefNumber { get; set; }
@@ -124,6 +125,14 @@ namespace GlobalPayments.Api.Terminals.Builders {
             SignatureCapture = signatureCapture;
             return this;
         }
+
+        public TerminalAuthBuilder WithTipRequest(bool tipRequest)
+        {
+            TipRequest = tipRequest;
+            return this;
+        }
+
+
         public TerminalAuthBuilder WithTaxAmount(decimal taxAmount) {
             TaxAmount = taxAmount;
             return this;

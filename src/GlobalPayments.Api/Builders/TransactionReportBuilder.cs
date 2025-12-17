@@ -69,6 +69,18 @@ namespace GlobalPayments.Api.Builders {
         }
 
         /// <summary>
+        /// Sets the device ID as criteria for the report.
+        /// </summary>
+        /// <param name="value">The device ID</param>
+        /// <returns>TResult</returns>
+        public TransactionReportBuilder<TResult> WithClientTxnId(string value)
+        {
+            SearchBuilder.ClientTransactionId = value;
+            return this;
+        }
+
+
+        /// <summary>
         /// Sets the gateway dispute id as criteria for the report.
         /// </summary>
         /// <param name="value">The gateway dispute id</param>

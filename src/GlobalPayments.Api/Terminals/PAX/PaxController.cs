@@ -138,11 +138,15 @@ namespace GlobalPayments.Api.Terminals.PAX {
             commercial.TaxExemptId = builder.TaxExemptId;
 
             // Additional Info sub group
+            if (builder.TipRequest)
+                extData[EXT_DATA.TIP_REQUEST] = "1";
+
             if (builder.RequestMultiUseToken)
                 extData[EXT_DATA.TOKEN_REQUEST] = "1";
 
             if (builder.SignatureCapture)
                 extData[EXT_DATA.SIGNATURE_CAPTURE] = "1";
+
 
             if (builder.AutoSubstantiation != null) {
                 extData[EXT_DATA.PASS_THROUGH_DATA] = BuildAutoSubPassThruData(builder.AutoSubstantiation);
