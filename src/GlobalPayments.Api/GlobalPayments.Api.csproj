@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <VersionPrefix>3.0.6</VersionPrefix>
-    <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>GlobalPayments.Grindless.Api</AssemblyName>
     <PackageId>GlobalPayments.Api</PackageId>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -16,15 +16,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="8.0.6" />
-	<PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-    <PackageReference Include="System.Net.Security" Version="4.3.2" />
-    <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
-    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Thread" Version="4.0.0" />
-    <PackageReference Include="System.Xml.XmlDocument" Version="4.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
-    <PackageReference Include="System.Net.Primitives" Version="4.3.0" />
   </ItemGroup>
 </Project>
