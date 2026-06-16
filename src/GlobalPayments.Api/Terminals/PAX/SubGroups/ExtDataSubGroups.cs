@@ -47,7 +47,7 @@ namespace GlobalPayments.Api.Terminals.PAX {
             var sb = new StringBuilder();
 
             foreach (var key in _collection.Keys) {
-                sb.Append("{0}={1}{2}".FormatWith(key, _collection[key], (char)ControlCodes.US));
+                sb.Append("{2}{0}={1}".FormatWith(key, _collection[key], (char)ControlCodes.US));
             }
 
             return sb.ToString().TrimEnd((char)ControlCodes.US);

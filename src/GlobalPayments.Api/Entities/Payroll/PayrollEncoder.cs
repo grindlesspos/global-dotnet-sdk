@@ -19,15 +19,17 @@ namespace GlobalPayments.Api.Entities.Payroll {
                 return null;
 
             using (var aes = Aes.Create()) {
-                var key = new Rfc2898DeriveBytes(ApiKey, Encoding.UTF8.GetBytes(Username.PadRight(8, ' ')), 1000);
-
-                var ems = new MemoryStream();
-                using (var encrypt = new CryptoStream(ems, aes.CreateEncryptor(key.GetKey(), key.GetVector()), CryptoStreamMode.Write)) {
-                    byte[] textBytes = Encoding.UTF8.GetBytes(value.ToString());
-                    encrypt.Write(textBytes, 0, textBytes.Length);
-                    encrypt.FlushFinalBlock();
+                using (var key = new Rfc2898DeriveBytes(ApiKey, Encoding.UTF8.GetBytes(Username.PadRight(8, ' ')), 1000))
+                using (var ems = new MemoryStream())
+                {
+                    using (var encrypt = new CryptoStream(ems, aes.CreateEncryptor(key.GetKey(), key.GetVector()), CryptoStreamMode.Write))
+                    {
+                        byte[] textBytes = Encoding.UTF8.GetBytes(value.ToString());
+                        encrypt.Write(textBytes, 0, textBytes.Length);
+                        encrypt.FlushFinalBlock();
+                    }
+                    return Convert.ToBase64String(ems.ToArray());
                 }
-                return Convert.ToBase64String(ems.ToArray());
             }
         }
 
@@ -36,16 +38,18 @@ namespace GlobalPayments.Api.Entities.Payroll {
                 return null;
 
             using (var aes = Aes.Create()) {
-                var key = new Rfc2898DeriveBytes(ApiKey, Encoding.UTF8.GetBytes(Username.PadRight(8, ' ')), 1000);
+                using (var key = new Rfc2898DeriveBytes(ApiKey, Encoding.UTF8.GetBytes(Username.PadRight(8, ' ')), 1000))
+                using (var dms = new MemoryStream())
+                {
+                    using (var decrypt = new CryptoStream(dms, aes.CreateDecryptor(key.GetKey(), key.GetVector()), CryptoStreamMode.Write))
+                    {
+                        byte[] cypherBytes = Convert.FromBase64String(value.ToString());
 
-                var dms = new MemoryStream();
-                using (var decrypt = new CryptoStream(dms, aes.CreateDecryptor(key.GetKey(), key.GetVector()), CryptoStreamMode.Write)) {
-                    byte[] cypherBytes = Convert.FromBase64String(value.ToString());
-
-                    decrypt.Write(cypherBytes, 0, cypherBytes.Length);
-                    decrypt.Flush();
+                        decrypt.Write(cypherBytes, 0, cypherBytes.Length);
+                        decrypt.Flush();
+                    }
+                    return Encoding.UTF8.GetString(dms.ToArray());
                 }
-                return Encoding.UTF8.GetString(dms.ToArray());
             }
         }
     }

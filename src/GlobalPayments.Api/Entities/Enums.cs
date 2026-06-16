@@ -66,7 +66,14 @@ namespace GlobalPayments.Api.Entities {
         /// <summary>
         /// Indicates a Nucleus terminal
         /// </summary>
-        NUCLEUS_SATURN_1000
+        NUCLEUS_SATURN_1000,
+
+        /// <summary>
+        /// Additional pax devices with various screen sizes.
+        /// </summary>
+        PAX_D190,
+        PAX_A35,
+        PAX_A920
 
     }
 

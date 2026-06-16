@@ -56,7 +56,17 @@ namespace GlobalPayments.Api.Terminals.PAX {
             byte[] buffer = message.GetSendBuffer();
 
             Connect();
+
             try {
+                if (_stream == null)
+                {
+                    // can be null if another thread is opening and waiting for connection.
+                    // typical when Cancel is called. We've increased the connection
+                    // count but cannot actually use it.
+                    throw new MessageException("Terminal is not yet ready.");
+                }
+
+
                 for (int i = 0; i < 3; i++) {
                     _stream.WriteAsync(buffer, 0, buffer.Length).Wait();
 

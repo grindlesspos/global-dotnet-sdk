@@ -79,6 +79,9 @@ namespace GlobalPayments.Api.Terminals {
                 case DeviceType.PAX_PX5:
                 case DeviceType.PAX_PX7:
                 case DeviceType.PAX_S300:
+                case DeviceType.PAX_A35:
+                case DeviceType.PAX_A920:
+                case DeviceType.PAX_D190:
                     services.DeviceController = new PaxController(this);
                     break;
                 case DeviceType.HPA_ISC250:

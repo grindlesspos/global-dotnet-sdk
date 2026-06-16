@@ -154,36 +154,85 @@ namespace GlobalPayments.Api.Terminals {
             return lrc;
         }
 
-        public static byte[] BuildSignatureImage(string pathData, int width = 150) {
+        public static byte[] BuildSignatureImage(string pathData, int width = 150, int height = 100) {
+
+            int yOffset = 0;
+
             Func<string, Point> toPoint = (coord) => {
                 var xy = coord.Split(',');
                 return new Point {
                     X = int.Parse(xy[0]),
-                    Y = int.Parse(xy[1])
+                    Y = int.Parse(xy[1]) + yOffset
                 };
             };
 
             // parse instructions
             var coordinates = pathData.Split('^');
 
-            Bitmap bmp = new Bitmap(width, 100);
+            if (height > 100)
+            {
+                // image may include a lot of dead space, let's trim it off. Square signatures are uncommon...
+                int minY = height, maxY = 0;
+                foreach( var coord in coordinates)
+                {
+                    if (coord == "~") break;
+                    if (coord == "0,65535") continue;
+
+                    var pt = toPoint(coord);
+                    if (pt.Y < minY) minY = pt.Y;
+                    if (pt.Y > maxY) maxY = pt.Y;
+                }
+
+                //
+                // set our offset and new height.
+                //
+                if (minY > maxY)  // empty image
+                    height = 100;
+                else if (maxY - minY < 100)
+                {
+                    // keep minimum height of 100 for consistency.
+                    height = 100;
+                    // equally space signature within the 100 pixel height
+                    yOffset = 50 - (maxY - minY + 1) / 2 - minY;
+                }
+                else
+                {
+                    yOffset = -minY;
+                    height = maxY - minY + 1;
+                }
+            }
+
+
+            Bitmap bmp = new Bitmap(width, height);
+            Pen pen = Pens.Black;
+            if (width >= 200) pen = new Pen(Color.Black, width / 100.0f);
 
             var gfx = Graphics.FromImage(bmp);
             gfx.Clear(Color.White);
 
             var index = 0;
+
             var coordinate = coordinates[index++];
             do {
                 if(coordinate == "0,65535")
                     coordinate = coordinates[index++];
-                var start = toPoint(coordinate);
+                //
+                // A35 experience: point data can have multiple 0,65535 in a row,
+                // including an EVEN number in a row. Thus, we need to check
+                // our start coordinate is valid and if not, 
+                //
+                if (coordinate != "0,65535")
+                {
+                    var start = toPoint(coordinate);
 
-                coordinate = coordinates[index++];
-                if (coordinate == "0,65535")
-                    gfx.FillRectangle(Brushes.Black, start.X, start.Y, 1, 1);
-                else {
-                    var end = toPoint(coordinate);
-                    gfx.DrawLine(Pens.Black, start, end);
+                    coordinate = coordinates[index++];
+                    if (coordinate == "0,65535")
+                        gfx.FillRectangle(Brushes.Black, start.X, start.Y, 1, 1);
+                    else
+                    {
+                        var end = toPoint(coordinate);
+                        gfx.DrawLine(pen, start, end);
+                    }
                 }
             }
             while (coordinates[index] != "~");
